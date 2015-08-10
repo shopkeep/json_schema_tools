@@ -4,7 +4,14 @@ class ClassWithSchemaAttrs
   include SchemaTools::Modules::Attributes
   has_schema_attrs :client
   # test override of schema name
-  attr_accessor :contact_source
+  attr_accessor :contact_source, :phone_mobile, :cash_discount, :id
+
+  def initialize
+    @phone_mobile = '777-7777'
+    @cash_discount = 1.5
+    @contact_source = 'interwebs'
+    @id = 5
+  end
 end
 
 class ClassWithSchemaNameLead
@@ -17,6 +24,10 @@ module Test
   class Address
     include SchemaTools::Modules::AsSchema
     attr_accessor :id, :city
+
+    def initialize
+      @city = 'New York'
+    end
   end
 end
 
@@ -47,6 +58,12 @@ describe SchemaTools::Modules::AsSchema do
       hsh['last_name'].should == 'Hogan'
     end
 
+    it 'should not include nodes for nil values' do
+      subject.last_name = nil
+      json_str = subject.as_schema_json
+      ActiveSupport::JSON.decode(json_str).keys.should_not include('last_name')
+    end
+
   end
 
   describe 'schema name detection' do
@@ -75,6 +92,5 @@ describe SchemaTools::Modules::AsSchema do
       subject.as_schema_hash(fields:['id']).keys.should == ['id']
     end
   end
-
 end
 

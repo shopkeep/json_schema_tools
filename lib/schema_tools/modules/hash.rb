@@ -88,16 +88,16 @@ module SchemaTools
             next unless obj.respond_to?(field)
             raw_val = obj.public_send(field)
             # convert field to schema type if set
-            conv_val = if raw_val.nil?
-                         raw_val
-                       elsif prop['type'] == 'string'  # rely on .to_s for format from date/datetime
-                         "#{raw_val}"
-                       elsif prop['type'] == 'integer'
-                         raw_val.to_i
-                       else # bool / number rely on .to_s in json lib
-                         raw_val
-                      end
-            data[field] = conv_val
+            if !raw_val.nil?
+              conv_val = if prop['type'] == 'string'  # rely on .to_s for format from date/datetime
+                           "#{raw_val}"
+                         elsif prop['type'] == 'integer'
+                           raw_val.to_i
+                         else # bool / number rely on .to_s in json lib
+                           raw_val
+                        end
+              data[field] = conv_val
+            end
           end
         end
         data
