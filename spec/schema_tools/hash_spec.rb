@@ -65,9 +65,9 @@ describe SchemaTools::Hash do
       hash['last_name'].should == 'Paul'
     end
 
-    it 'keeps nil values' do
+    it 'does not keep nil values' do
       hash = SchemaTools::Hash.from_schema(contact)
-      hash.keys.should include('organisation')
+      hash.keys.should_not include('organisation')
       hash['organisation'].should be_nil
       # hash['birthday'].should be_nil
     end
@@ -136,12 +136,8 @@ describe SchemaTools::Hash do
       a1.zip = 50733
       client.addresses = [a1]
       hash = SchemaTools::Hash.from_schema(client)
-      hash['addresses'].should == [{"id" => nil,
-                                    "city"=>"Cologne",
-                                    "address1" => nil,
-                                    "zip"=>"50733",
-                                    "country" => nil,
-                                    "address_type" => nil}]
+      hash['addresses'].should == [{"city"=>"Cologne",
+                                    "zip"=>"50733"}]
     end
 
     it 'has nested array values without root' do
@@ -150,12 +146,8 @@ describe SchemaTools::Hash do
       a1.zip = 50733
       client.addresses = [a1]
       hash = SchemaTools::Hash.from_schema(client, exclude_root: true)
-      hash['addresses'].should == [{"id" => nil,
-                                    "city"=>"Cologne",
-                                    "address1" => nil,
-                                    "zip"=>"50733",
-                                    "country" => nil,
-                                    "address_type" => nil}]
+      hash['addresses'].should == [{"city"=>"Cologne",
+                                    "zip"=>"50733"}]
     end
 
     it 'has nested object value' do
@@ -164,12 +156,8 @@ describe SchemaTools::Hash do
       a1.zip = 50733
       client.work_address = a1
       hash = SchemaTools::Hash.from_schema(client)
-      hash['work_address'].should == {"id" => nil,
-                                      "city"=>"Cologne",
-                                      "address1" => nil,
-                                      "zip"=>"50733",
-                                      "country" => nil,
-                                      "address_type" => nil}
+      hash['work_address'].should == {"city"=>"Cologne",
+                                      "zip"=>"50733"}
     end
   end
 
